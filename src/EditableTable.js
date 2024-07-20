@@ -4,19 +4,20 @@ import {
     Box, Button, Snackbar, Table,
     TableBody, TableCell, TableHead, TableRow, TableContainer
 } from "@mui/material";
-import DeleteOutlineIcon from "@mui/material/";
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AddIcon from '@mui/icons-material/Add';
 import DoneIcon from '@mui/icons-material/Done';
-import ClearIcon from "@mui/material";
+import ClearIcon from '@mui/icons-material/Clear';
 import { styled } from "@mui/material/styles";
 import { tableCellClasses } from '@mui/material/TableCell';
-import Alert from "@mui/material";
-import Dialog from "@mui/material";
-import DialogActions from "@mui/material";
-import DialogContent from "@mui/material";
-import DialogContentText from "@mui/material";
-import DialogTitle from "@mui/material";
+import Alert from "@mui/material/Alert";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import Paper from '@mui/material/Paper';
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.info.light,
@@ -25,7 +26,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.body}`]: {
       fontSize: 14,
     },
-  }));
+}));
 
 
 function EditableTable() {
@@ -36,6 +37,12 @@ function EditableTable() {
     const [disable, setDisable] = useState(true);
     const [showConfirm, setShowConfirm] = useState(false);
 
+    const handleClose = (event, reason) => {
+        if (reason === "clickaway") {
+            return;
+        }
+        setOpen(false);
+    };
     const handleAdd = () => {
         setRows([
             ...rows,
@@ -45,6 +52,21 @@ function EditableTable() {
             },
         ]);
         setEdit(true);
+    };
+
+    const handleRemoveClick = (i) => {
+        const list = [...rows];
+        list.splice(i, 1);
+        setRows(list);
+        setShowConfirm(false);
+        if (list.length === 0) {
+            setEdit(false);
+            setRows([ { id: 1, firstname: "", lastname: "", email: "" }]);
+        }
+    };
+
+    const handleNo = () => {
+        setShowConfirm(false);
     };
 
     const handleInputChange = (e, index) => {
@@ -65,9 +87,22 @@ function EditableTable() {
     const handleEdit = (i) => {
         setEdit(!isEdit);
     };
+
+    const handleConfirm = () => {
+        setShowConfirm(true);
+    };
  return (
-        <TableBody>
+        <>
         <Box margin={1}>
+            <Snackbar
+                open={open}
+                autoHideDuration={2000}
+                onClose={handleClose}
+            >
+                <Alert onClose={handleClose} severity="success">
+                    Record saved successfully!
+                </Alert>
+            </Snackbar>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <div>
                 {isEdit ? (
@@ -98,13 +133,16 @@ function EditableTable() {
                 </div>
             </div>
             <TableRow align="center"> </TableRow>
+            </Box>
+            <div style={{ display: "flex", justifyContent: "center" }}>
             <TableContainer component={Paper} sx={{maxWidth: 800}} padding={50}>
                 <Table sx={{ columnCount: 50}}>
                 <TableHead>
                     <TableRow>
-                        <StyledTableCell sx={{ width: 200 }}>First Name</StyledTableCell>
-                        <StyledTableCell sx={{ width: 200 }}>Last Name</StyledTableCell>
-                        <StyledTableCell sx={{ width: 200 }}>Email</StyledTableCell>
+                        <StyledTableCell sx={{ width: 250 }}>First Name</StyledTableCell>
+                        <StyledTableCell sx={{ width: 250 }}>Last Name</StyledTableCell>
+                        <StyledTableCell sx={{ width: 250 }}>Email</StyledTableCell>
+                        <StyledTableCell></StyledTableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -112,61 +150,95 @@ function EditableTable() {
                     return (
                             <TableRow key={row.id}> 
                                 {isEdit ? (
-                                <>
-                                <TableCell>
-                                    <input
-                                        value={row.firstname}
-                                        name="firstname"
-                                        onChange={(e) => handleInputChange(e, i)}
-                                        style={{ width: '70%' }}
-                                    />
-                                </TableCell>
-
-                                <TableCell>
-                                    <input
-                                        value={row.lastname}
-                                        name="lastname"
-                                        onChange={(e) => handleInputChange(e, i)}
-                                        style={{ width: '70%' }}
-                                    />
-                                </TableCell>
-                                <TableCell>
-                                    <input
-                                        value={row.email}
-                                        name="email"
-                                        onChange={(e) => handleInputChange(e, i)}
-                                        style={{ width: '70%' }}
-                                    />
-                                </TableCell>
-                                </>
+                                    <>
+                                        <TableCell>
+                                        <input
+                                            value={row.firstname}
+                                            name="firstname"
+                                            onChange={(e) => handleInputChange(e, i)}
+                                            style={{ width: '80%' }}
+                                        />
+                                        </TableCell>
+                                        <TableCell>
+                                        <input
+                                            value={row.lastname}
+                                            name="lastname"
+                                            onChange={(e) => handleInputChange(e, i)}
+                                            style={{ width: '80%' }}
+                                        />
+                                        </TableCell>
+                                        <TableCell>
+                                        <input
+                                            value={row.email}
+                                            name="email"
+                                            onChange={(e) => handleInputChange(e, i)}
+                                            style={{ width: '80%' }}
+                                        />
+                                        </TableCell>
+                                    </>
                                 ) : (
                                     <>
-                                        <TableCell component="th" scope="row">
-                                                    {row.firstname}
-                                                </TableCell>
-                                                <TableCell component="th" scope="row">
-                                                    {row.lastname}
-                                                </TableCell>
-                                                <TableCell component="th"
-                                                           scope="row"
-                                                           align="center">
-                                                    {row.email}
-                                                </TableCell>
-                                                <TableCell
-                                                    component="th"
-                                                    scope="row"
-                                                    align="center"
-                                                ></TableCell>
-                                            </>
+                                        <TableCell>
+                                            {row.firstname}
+                                        </TableCell>
+                                        <TableCell>
+                                            {row.lastname}
+                                        </TableCell>
+                                        <TableCell>
+                                            {row.email}
+                                        </TableCell>
+                                    </>
+                                )}
+                                {isEdit ? (
+                                    <Button onClick={handleConfirm}>
+                                        <ClearIcon />
+                                    </Button>
+                                ) : (
+                                    <Button onClick={handleConfirm}>
+                                        <DeleteOutlineIcon />
+                                    </Button>
+                                )}
+                                {showConfirm && (
+                                    <div>
+                                        <Dialog
+                                            open={showConfirm}
+                                            onClose={handleNo}>
+                                            <DialogTitle>
+                                                {"Confirm Delete"}
+                                            </DialogTitle>
+                                            <DialogContent>
+                                                <DialogContentText >
+                                                    Are you sure to delete it?
+                                                </DialogContentText>
+                                            </DialogContent>
+                                            <DialogActions>
+                                                <Button
+                                                    onClick={() => 
+                                                    handleRemoveClick(i)}
+                                                    color="primary"
+                                                    autoFocus
+                                                >
+                                                Yes
+                                                </Button>
+                                                <Button
+                                                    onClick={handleNo}
+                                                    color="primary"
+                                                    autoFocus
+                                                >
+                                                No
+                                                </Button>
+                                            </DialogActions>
+                                        </Dialog>
+                                    </div>
                                 )}
                             </TableRow>
-                    );
-                })}
+                        );
+                    })}
             </TableBody>
-        </Table>
-        </TableContainer>
-        </Box>
-        </TableBody>
+            </Table>
+            </TableContainer>
+            </div>
+            </>
  );
 }
 

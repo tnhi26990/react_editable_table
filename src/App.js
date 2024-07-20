@@ -4,7 +4,7 @@ function App() {
   return (
     <div>
       <div className="header">
-        <h1>React Editable Demo</h1>
+        <h1>React Editable Table</h1>
       </div>
       <EditableTable />
     </div>
