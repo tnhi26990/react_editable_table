@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import CreateIcon from "@mui/material";
+import EditIcon from '@mui/icons-material/Edit';
 import {
     Box, Button, Snackbar, Table,
     TableBody, TableCell, TableHead, TableRow, TableContainer
@@ -29,8 +29,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 
 function EditableTable() {
-    const [rows, setRows] = useState([
-        { id: 1, firstname: "", lastname: "", email: "" },
+    const [rows, setRows] = useState([ { id: 1, firstname: "", lastname: "", email: "" },
     ]);
     const [open, setOpen] = useState(false);
     const [isEdit, setEdit] = useState(false);
@@ -55,34 +54,65 @@ function EditableTable() {
         list[index][name] = value;
         setRows(list);
     };
+    const handleSave = () => {
+        setEdit(!isEdit);
+        setRows(rows);
+        console.log("saved : ", rows);
+        setDisable(true);
+        setOpen(true);
+    };
+
+    const handleEdit = (i) => {
+        setEdit(!isEdit);
+    };
  return (
-    <div>
-        <Box margin={3} sx={{ border: '2px solid green' }} width={170}>
+        <TableBody>
+        <Box margin={1}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <Button onClick={handleAdd}>
-                    <AddIcon onClick={handleAdd} />
-                    Add
-                </Button>
-                <Button>
-                    <DoneIcon />
-                    Save
-                </Button>
+                <div>
+                {isEdit ? (
+                    <div>
+                        <Button onClick={handleAdd}>
+                            <AddIcon onClick={handleAdd} />
+                            Add
+                        </Button>
+                        {rows.length !== 0 && (
+                            <Button disabled={disable}  align="right" onClick={handleSave}>
+                                <DoneIcon />
+                                Save
+                            </Button>
+                        )}
+                    </div>
+                ) : (
+                    <div>
+                        <Button onClick={handleAdd}>
+                            <AddIcon onClick={handleAdd} />
+                            Add
+                        </Button>
+                        <Button align="right" onClick={handleEdit}>
+                            <EditIcon />
+                            Edit
+                        </Button>
+                    </div>
+                )}
+                </div>
             </div>
-        </Box>
-        <div style={{ display: 'flex', justifyContent: 'center'}}>
-        <TableContainer component={Paper} sx={{maxWidth: 800}} padding={50}>
-        <Table sx={{ columnCount: 50}}>
-            <TableHead>
-                <TableRow>
-                    <StyledTableCell sx={{ width: 200 }}>First Name</StyledTableCell>
-                    <StyledTableCell sx={{ width: 200 }}>Last Name</StyledTableCell>
-                    <StyledTableCell sx={{ width: 200 }}>Email</StyledTableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
+            <TableRow align="center"> </TableRow>
+            <TableContainer component={Paper} sx={{maxWidth: 800}} padding={50}>
+                <Table sx={{ columnCount: 50}}>
+                <TableHead>
+                    <TableRow>
+                        <StyledTableCell sx={{ width: 200 }}>First Name</StyledTableCell>
+                        <StyledTableCell sx={{ width: 200 }}>Last Name</StyledTableCell>
+                        <StyledTableCell sx={{ width: 200 }}>Email</StyledTableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
                 {rows.map((row, i) => {
                     return (
-                            <TableRow> 
+                            <TableRow key={row.id}> 
+                                {isEdit ? (
+                                <>
                                 <TableCell>
                                     <input
                                         value={row.firstname}
@@ -91,6 +121,7 @@ function EditableTable() {
                                         style={{ width: '70%' }}
                                     />
                                 </TableCell>
+
                                 <TableCell>
                                     <input
                                         value={row.lastname}
@@ -102,19 +133,40 @@ function EditableTable() {
                                 <TableCell>
                                     <input
                                         value={row.email}
-                                        name="city"
+                                        name="email"
                                         onChange={(e) => handleInputChange(e, i)}
                                         style={{ width: '70%' }}
                                     />
                                 </TableCell>
+                                </>
+                                ) : (
+                                    <>
+                                        <TableCell component="th" scope="row">
+                                                    {row.firstname}
+                                                </TableCell>
+                                                <TableCell component="th" scope="row">
+                                                    {row.lastname}
+                                                </TableCell>
+                                                <TableCell component="th"
+                                                           scope="row"
+                                                           align="center">
+                                                    {row.email}
+                                                </TableCell>
+                                                <TableCell
+                                                    component="th"
+                                                    scope="row"
+                                                    align="center"
+                                                ></TableCell>
+                                            </>
+                                )}
                             </TableRow>
                     );
                 })}
             </TableBody>
         </Table>
         </TableContainer>
-        </div>
-    </div>
+        </Box>
+        </TableBody>
  );
 }
 
