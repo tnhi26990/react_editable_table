@@ -17,17 +17,30 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Paper from '@mui/material/Paper';
+import { orange, red, green, blue} from '@mui/material/colors';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.info.light,
+      backgroundColor: theme.palette.warning.light,
       color: theme.palette.common.white,
+      fontSize: 16,
     },
     [`&.${tableCellClasses.body}`]: {
       fontSize: 14,
     },
 }));
 
+const theme = createTheme({
+    palette: {
+        primary: orange,
+        secondary: red,
+        customColors: {
+            success: green,
+            info: blue,
+          },
+    },
+});
 
 function EditableTable() {
     const [rows, setRows] = useState([ { id: 1, firstname: "", lastname: "", email: "" },
@@ -107,24 +120,24 @@ function EditableTable() {
                 <div>
                 {isEdit ? (
                     <div>
-                        <Button onClick={handleAdd}>
+                        <Button onClick={handleAdd} color="info">
                             <AddIcon onClick={handleAdd} />
                             Add
                         </Button>
                         {rows.length !== 0 && (
-                            <Button disabled={disable}  align="right" onClick={handleSave}>
+                            <Button disabled={disable}  align="right" onClick={handleSave} color="success">
                                 <DoneIcon />
                                 Save
                             </Button>
-                        )}
+                        )}  
                     </div>
                 ) : (
                     <div>
-                        <Button onClick={handleAdd}>
+                        <Button onClick={handleAdd} color="info">
                             <AddIcon onClick={handleAdd} />
                             Add
                         </Button>
-                        <Button align="right" onClick={handleEdit}>
+                        <Button align="right" onClick={handleEdit} color="success">
                             <EditIcon />
                             Edit
                         </Button>
@@ -190,13 +203,17 @@ function EditableTable() {
                                     </>
                                 )}
                                 {isEdit ? (
-                                    <Button onClick={handleConfirm}>
+                                    <ThemeProvider theme={theme}>
+                                    <Button onClick={handleConfirm} color="secondary">
                                         <ClearIcon />
                                     </Button>
+                                    </ThemeProvider>
                                 ) : (
-                                    <Button onClick={handleConfirm}>
+                                    <ThemeProvider theme={theme}>
+                                    <Button onClick={handleConfirm} color="secondary">
                                         <DeleteOutlineIcon />
                                     </Button>
+                                    </ThemeProvider>
                                 )}
                                 {showConfirm && (
                                     <div>
@@ -215,14 +232,14 @@ function EditableTable() {
                                                 <Button
                                                     onClick={() => 
                                                     handleRemoveClick(i)}
-                                                    color="primary"
+                                                    color="info"
                                                     autoFocus
                                                 >
                                                 Yes
                                                 </Button>
                                                 <Button
                                                     onClick={handleNo}
-                                                    color="primary"
+                                                    color="info"
                                                     autoFocus
                                                 >
                                                 No
