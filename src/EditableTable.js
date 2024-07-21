@@ -43,7 +43,7 @@ const theme = createTheme({
 });
 
 function EditableTable() {
-    const [rows, setRows] = useState([ { id: 1, firstname: "", lastname: "", email: "" },
+    const [rows, setRows] = useState([
     ]);
     const [open, setOpen] = useState(false);
     const [isEdit, setEdit] = useState(false);
@@ -74,7 +74,6 @@ function EditableTable() {
         setShowConfirm(false);
         if (list.length === 0) {
             setEdit(false);
-            setRows([ { id: 1, firstname: "", lastname: "", email: "" }]);
         }
     };
 
